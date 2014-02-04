@@ -1,0 +1,17 @@
+#!/usr/bin/python3
+
+import shlex
+import sys
+import subprocess
+
+cmd = sys.argv[1]
+while True:
+    try:
+        uargs = shlex.split(input(cmd + '>> '))
+    except EOFError:
+        sys.exit(0)
+    except ValueError as e:
+        print(e)
+        continue
+
+    subprocess.call([cmd] + uargs)

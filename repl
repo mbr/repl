@@ -1,17 +1,21 @@
-#!/usr/bin/python3
+#!/usr/bin/python3 -u
 
+import argparse
 import shlex
 import sys
 import subprocess
 
-cmd = sys.argv[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('command', nargs='+')
+args = parser.parse_args()
+
 while True:
     try:
-        uargs = shlex.split(input(cmd + '>> '))
+        uargs = shlex.split(input(' '.join(args.command) + '>> '))
     except EOFError:
         sys.exit(0)
     except ValueError as e:
         print(e)
         continue
 
-    subprocess.call([cmd] + uargs)
+    subprocess.call(args.command + uargs)

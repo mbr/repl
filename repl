@@ -4,7 +4,25 @@ import argparse
 import shlex
 import sys
 import subprocess
-import readline
+
+try:
+    import readline
+    import xdg.BaseDirectory
+except ImportError:
+    pass  # no readline or xdg support
+else:
+    import atexit
+    import os
+    conf = xdg.BaseDirectory.save_config_path('repl')
+    histfile = os.path.join(conf, 'history')
+
+    try:
+        readline.read_history_file(histfile)
+    except IOError:
+        pass
+
+    atexit.register(readline.write_history_file, histfile)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('command', nargs='+')

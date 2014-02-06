@@ -4,6 +4,27 @@ import argparse
 import shlex
 import sys
 import subprocess
+import os
+
+
+def fcomplete(text, state):
+    text = os.path.expanduser(text)
+    head, tail = os.path.split(text)
+
+    search_dir = os.path.join('.', head)
+    candidates = [s for s in os.listdir(search_dir) if s.startswith(tail)]
+
+    if state >= len(candidates):
+        return None
+
+    if len(candidates) == 1:
+        fn = os.path.join(head, candidates[0])
+        if not os.path.isdir(fn):
+            return fn + ' '
+        return fn + '/'
+
+    return os.path.join(head, candidates[state])
+
 
 try:
     import readline
@@ -12,7 +33,7 @@ except ImportError:
     pass  # no readline or xdg support
 else:
     import atexit
-    import os
+
     conf = xdg.BaseDirectory.save_config_path('repl')
     histfile = os.path.join(conf, 'history')
 
@@ -22,6 +43,9 @@ else:
         pass
 
     atexit.register(readline.write_history_file, histfile)
+    readline.parse_and_bind('tab: complete')
+    readline.set_completer_delims(' \t\n')
+    readline.set_completer(fcomplete)
 
 
 parser = argparse.ArgumentParser()

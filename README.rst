@@ -5,7 +5,8 @@ Runs a command in a `REPL <https://en.wikipedia.org/wiki/Read-eval-
 print_loop>`_ loop. My personal use case is this::
 
    % repl git
-   git>> init .Initialized empty Git repository in ...
+   git>> init .
+   Initialized empty Git repository in ...
    git>> add README.rst
    git>> commit -m 'Initial commit.'
    [master (root-commit) d18bb26] Initial commit.

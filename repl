@@ -26,6 +26,10 @@ def fcomplete(text, state):
     return os.path.join(head, candidates[state])
 
 
+def colorize(sequence, text, end="00"):
+    return "\033[{}m{}\033[{}m" .format(sequence, text, end)
+
+
 try:
     import readline
     import xdg.BaseDirectory
@@ -50,11 +54,20 @@ else:
 
 parser = argparse.ArgumentParser()
 parser.add_argument('command', nargs='+')
+parser.add_argument('--no-color', default=False, action='store_true',
+                    help='do not colorized prompt.')
 args = parser.parse_args()
+
+if args.no_color:
+    prompt = ' '.join(args.command) + '>> '
+else:
+    color = '33'
+    prompt = (colorize('1;' + color, ' '.join(args.command)) +
+              colorize('0;' + color, '>> '))
 
 while True:
     try:
-        uargs = shlex.split(input(' '.join(args.command) + '>> '))
+        uargs = shlex.split(input(prompt))
     except EOFError:
         sys.exit(0)
     except ValueError as e:

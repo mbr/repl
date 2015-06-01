@@ -30,6 +30,22 @@ def colorize(sequence, text, end="00"):
     return "\033[{}m{}\033[{}m" .format(sequence, text, end)
 
 
+def replace_slice(placeholder, replacement, l, append=False):
+    rv = []
+    found = False
+    for elem in l:
+        if elem == placeholder:
+            rv.extend(replacement)
+            found = True
+            continue
+        rv.append(elem)
+
+    if not found and append:
+        rv.extend(replacement)
+
+    return rv
+
+
 try:
     import readline
     import xdg.BaseDirectory
@@ -57,7 +73,11 @@ parser.add_argument('command', nargs=argparse.REMAINDER)
 parser.add_argument('--no-color', default=False, action='store_true',
                     help='do not colorized prompt.')
 parser.add_argument('--prompt', help='override prompt')
+parser.add_argument('--sub', default='{}',
+                    help='argument to replace with whatever is entered on the '
+                         'REPL. use --sub= to disable substitution')
 args = parser.parse_args()
+
 
 if args.prompt:
     prompt = args.prompt
@@ -68,6 +88,7 @@ else:
     prompt = (colorize('1;' + color, ' '.join(args.command)) +
               colorize('0;' + color, '>> '))
 
+
 while True:
     try:
         uargs = shlex.split(input(prompt))
@@ -77,4 +98,7 @@ while True:
         print(e)
         continue
 
-    subprocess.call(args.command + uargs)
+    # substitute values
+    cmd = replace_slice(args.sub, uargs, args.command, append=True)
+
+    subprocess.call(cmd)

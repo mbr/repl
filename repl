@@ -61,7 +61,7 @@ args = parser.parse_args()
 if args.no_color:
     prompt = ' '.join(args.command) + '>> '
 else:
-    color = '33'
+    color = '34'
     prompt = (colorize('1;' + color, ' '.join(args.command)) +
               colorize('0;' + color, '>> '))
 

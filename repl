@@ -68,14 +68,18 @@ else:
     readline.set_completer(fcomplete)
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    description='Starts a print-execute-print-loop by running the supplied '
+                'with input read from the terminal.',
+    epilog='Arguments can be given inline by using {}: "repl foo {} --bar"'
+           '\n\nwill run replacing the {} with entered arguments. To suppress '
+           'this behavior completely, "--sub=" can be used.'
+)
 parser.add_argument('command', nargs=argparse.REMAINDER)
 parser.add_argument('--no-color', default=False, action='store_true',
                     help='do not colorized prompt.')
 parser.add_argument('--prompt', help='override prompt')
-parser.add_argument('--sub', default='{}',
-                    help='argument to replace with whatever is entered on the '
-                         'REPL. use --sub= to disable substitution')
+parser.add_argument('--sub', default='{}', help='argument to replace')
 args = parser.parse_args()
 
 

@@ -26,7 +26,7 @@ def fcomplete(text, state):
     return os.path.join(head, candidates[state])
 
 
-def colorize(sequence, text, end="00"):
+def colorize(sequence, text, end="00", rlp=True):
     # see: https://stackoverflow.com/questions/9468435/
     # look-how-to-fix-column-calculation-in-python-readline-if-use-color-prompt
     #
@@ -35,7 +35,7 @@ def colorize(sequence, text, end="00"):
 
     rl_start = rl_end = ''
 
-    if 'readline' in locals():
+    if rlp:
         rl_start = '\001'
         rl_end = '\002'
 
@@ -60,6 +60,7 @@ def replace_slice(placeholder, replacement, l, append=False):
     return rv
 
 
+rlp = False
 try:
     import readline
     import xdg.BaseDirectory
@@ -80,6 +81,7 @@ else:
     readline.parse_and_bind('tab: complete')
     readline.set_completer_delims(' \t\n')
     readline.set_completer(fcomplete)
+    rlp = True
 
 
 parser = argparse.ArgumentParser(
@@ -106,10 +108,10 @@ else:
     sub_color = '37'
 
     prompt_cmd = [
-        colorize('1;' + color, part) if part != args.sub else
-        colorize('0;' + sub_color, u'\u2026') for part in args.command
+        colorize('1;' + color, part, rlp=rlp) if part != args.sub else
+        colorize('0;' + sub_color, u'\u2026', rlp=rlp) for part in args.command
     ]
-    prompt = ' '.join(prompt_cmd) + colorize('0;' + color, '>> ')
+    prompt = ' '.join(prompt_cmd) + colorize('0;' + color, '>> ', rlp=rlp)
 
 
 while True:

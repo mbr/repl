@@ -27,7 +27,21 @@ def fcomplete(text, state):
 
 
 def colorize(sequence, text, end="00"):
-    return "\033[{}m{}\033[{}m" .format(sequence, text, end)
+    # see: https://stackoverflow.com/questions/9468435/
+    # look-how-to-fix-column-calculation-in-python-readline-if-use-color-prompt
+    #
+    # and: http://bugs.python.org/issue12972'
+    #      http://wiki.hackzine.org/development/misc/readline-color-prompt.html
+
+    rl_start = rl_end = ''
+
+    if 'readline' in locals():
+        rl_start = '\001'
+        rl_end = '\002'
+
+    return (rl_start + "\033[" + sequence + "m" + rl_end +
+            text +
+            rl_start + "\033[" + end + "m" + rl_end)
 
 
 def replace_slice(placeholder, replacement, l, append=False):

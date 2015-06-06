@@ -60,6 +60,10 @@ def replace_slice(placeholder, replacement, l, append=False):
     return rv
 
 
+def set_title(title):
+    sys.stdout.write("\x1b]2;{}\x07".format(title))
+
+
 rlp = False
 try:
     import readline
@@ -112,9 +116,11 @@ else:
         colorize('0;' + sub_color, u'\u2026', rlp=rlp) for part in args.command
     ]
     prompt = ' '.join(prompt_cmd) + colorize('0;' + color, '>> ', rlp=rlp)
+    prompt_name = ' '.join(args.command) + '>>'
 
 
 while True:
+    set_title(prompt_name)
     try:
         uargs = shlex.split(input(prompt))
     except EOFError:
@@ -126,4 +132,5 @@ while True:
     # substitute values
     cmd = replace_slice(args.sub, uargs, args.command, append=True)
 
+    set_title(' '.join(cmd))
     subprocess.call(cmd)

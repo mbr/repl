@@ -116,7 +116,10 @@ else:
         colorize('0;' + sub_color, u'\u2026', rlp=rlp) for part in args.command
     ]
     prompt = ' '.join(prompt_cmd) + colorize('0;' + color, '>> ', rlp=rlp)
-    prompt_name = ' '.join(args.command) + '>>'
+    prompt_name = ('[{}] {}>>'.format(
+        os.path.split(os.path.abspath('.'))[-1],
+        ' '.join(args.command)
+    ))
 
 
 while True:

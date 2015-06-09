@@ -127,6 +127,7 @@ while True:
     try:
         uargs = shlex.split(input(prompt))
     except EOFError:
+        print()
         sys.exit(0)
     except ValueError as e:
         print(e)

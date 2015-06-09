@@ -2,8 +2,6 @@ repl
 ====
 
 .. image:: repl-demo.gif
-   :width: 736 px
-   :height: 603 px
 
 Runs a command in a `REPL <https://en.wikipedia.org/wiki/Read-eval-
 print_loop>`_. My personal use case is this::

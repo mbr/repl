@@ -1,6 +1,8 @@
 repl
 ====
 
+.. image:: repl-demo.gif
+
 Runs a command in a `REPL <https://en.wikipedia.org/wiki/Read-eval-
 print_loop>`_. My personal use case is this::
 

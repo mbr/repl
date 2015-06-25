@@ -5,6 +5,7 @@ import shlex
 import sys
 import subprocess
 import os
+import warnings
 
 
 def fcomplete(text, state):
@@ -68,7 +69,8 @@ rlp = False
 try:
     import readline
     import xdg.BaseDirectory
-except ImportError:
+except ImportError as e:
+    warnings.warn('{}. History and tab completion disabled.'.format(e))
     pass  # no readline or xdg support
 else:
     import atexit

@@ -8,6 +8,13 @@ import os
 import warnings
 
 
+# Python2/3 compatibility
+if sys.version_info.major <= 2:
+    inp = raw_input
+else:
+    inp = input
+
+
 def fcomplete(text, state):
     text = os.path.expanduser(text)
     head, tail = os.path.split(text)
@@ -127,7 +134,7 @@ else:
 while True:
     set_title(prompt_name)
     try:
-        uargs = shlex.split(input(prompt))
+        uargs = shlex.split(inp(prompt))
     except EOFError:
         print()
         sys.exit(0)

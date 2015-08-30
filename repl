@@ -7,7 +7,6 @@ import subprocess
 import os
 import warnings
 
-
 # Python2/3 compatibility
 if sys.version_info.major <= 2:
     inp = raw_input
@@ -47,9 +46,8 @@ def colorize(sequence, text, end="00", rlp=True):
         rl_start = '\001'
         rl_end = '\002'
 
-    return (rl_start + "\033[" + sequence + "m" + rl_end +
-            text +
-            rl_start + "\033[" + end + "m" + rl_end)
+    return (rl_start + "\033[" + sequence + "m" + rl_end + text + rl_start +
+            "\033[" + end + "m" + rl_end)
 
 
 def replace_slice(placeholder, replacement, l, append=False):
@@ -96,21 +94,20 @@ else:
     readline.set_completer(fcomplete)
     rlp = True
 
-
 parser = argparse.ArgumentParser(
     description='Starts a print-execute-print-loop by running the supplied '
-                'with input read from the terminal.',
+    'with input read from the terminal.',
     epilog='Arguments can be given inline by using {}: "repl foo {} --bar"'
-           '\n\nwill run replacing the {} with entered arguments. To suppress '
-           'this behavior completely, "--sub=" can be used.'
-)
+    '\n\nwill run replacing the {} with entered arguments. To suppress '
+    'this behavior completely, "--sub=" can be used.')
 parser.add_argument('command', nargs=argparse.REMAINDER)
-parser.add_argument('--no-color', default=False, action='store_true',
+parser.add_argument('--no-color',
+                    default=False,
+                    action='store_true',
                     help='do not colorized prompt.')
 parser.add_argument('--prompt', help='override prompt')
 parser.add_argument('--sub', default='{}', help='argument to replace')
 args = parser.parse_args()
-
 
 if args.prompt:
     prompt = args.prompt
@@ -121,15 +118,14 @@ else:
     sub_color = '37'
 
     prompt_cmd = [
-        colorize('1;' + color, part, rlp=rlp) if part != args.sub else
-        colorize('0;' + sub_color, u'\u2026', rlp=rlp) for part in args.command
+        colorize('1;' + color, part,
+                 rlp=rlp)
+        if part != args.sub else colorize('0;' + sub_color, u'\u2026',
+                                          rlp=rlp) for part in args.command
     ]
     prompt = ' '.join(prompt_cmd) + colorize('0;' + color, '>> ', rlp=rlp)
     prompt_name = ('[{}] {}>>'.format(
-        os.path.split(os.path.abspath('.'))[-1],
-        ' '.join(args.command)
-    ))
-
+        os.path.split(os.path.abspath('.'))[-1], ' '.join(args.command)))
 
 while True:
     set_title(prompt_name)

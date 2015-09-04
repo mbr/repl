@@ -6,7 +6,8 @@ import sys
 
 import click
 
-from .util import fcomplete, set_title, inp, replace_slice
+from .util import (fcomplete, set_title, inp, replace_slice, get_terminal_size,
+                   strip_control)
 
 
 class REPL(object):
@@ -85,10 +86,14 @@ class REPL(object):
         return '[{}] {}>>'.format(
             os.path.split(os.path.abspath('.'))[-1], ' '.join(self.command))
 
+    def pre_prompt(self):
+        pass
+
     def run(self):
         while True:
             set_title(self.title)
 
+            self.pre_prompt()
             try:
                 line = inp(self.prompt).lstrip()
                 if not self.enable_external and line.startswith('!'):
@@ -112,9 +117,55 @@ class REPL(object):
 
 
 class GitREPL(REPL):
+    def cwd_is_repo(self):
+        return subprocess.call(['git', 'rev-parse']) == 0
+
     @classmethod
     def detect(self, command):
         return ['git'] == [c for c in command if not c.startswith('-')]
+
+    def pre_prompt(self):
+        try:
+            branch_output = subprocess.check_output(['git', 'branch'])
+        except subprocess.CalledProcessError:
+            return
+
+        # display special prompt
+        w, _ = get_terminal_size()
+
+        active_branch = None
+        branches = []
+        for line in branch_output.splitlines():
+            branch = line[2:].rstrip()
+            if line.startswith('* '):
+                active_branch = branch
+            branches.append(branch)
+
+        flags = []
+        if 'todo' in branches:
+            branches.remove('todo')  # do not show in branch list
+            flags.append('TODO')
+
+        branch_status = ' '.join(
+            click.style(b,
+                        fg='green',
+                        bold=(b == active_branch)) for b in branches)
+
+        flag_status = ' '.join('[' + click.style(flag,
+                                                 fg='cyan') + ']'
+                               for flag in flags)
+
+        spacing = 2
+        bs_len = len(strip_control(branch_status))
+        fl_len = len(strip_control(flag_status))
+        rem_space = w - (bs_len % w) - fl_len - spacing
+
+        if rem_space < 0:
+            click.echo(branch_status)
+            click.echo(flag_status)
+        else:
+            click.echo(
+                branch_status + ' ' * (rem_space + spacing) + flag_status)
 
 
 available_repls = {'git': GitREPL}

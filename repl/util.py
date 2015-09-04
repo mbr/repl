@@ -1,5 +1,9 @@
+import fcntl
 import os
+import re
+import struct
 import sys
+import termios
 
 
 def replace_slice(placeholder, replacement, l, append=False):
@@ -48,3 +52,21 @@ if sys.version_info.major <= 2:
     inp = raw_input
 else:
     inp = input
+
+
+def get_terminal_size(fileno=None):
+    if fileno is None:
+        fileno = sys.stdout.fileno()
+
+    buf = struct.pack('HHHH', 0, 0, 0, 0)
+    res = fcntl.ioctl(fileno, termios.TIOCGWINSZ, buf)
+    h, w, _, _ = struct.unpack('HHHH', res)
+
+    return (w, h)
+
+
+_ANSI_ESCAPE_EXP = re.compile(r'\x1b[^m]*m')
+
+
+def strip_control(s):
+    return _ANSI_ESCAPE_EXP.sub('', s)

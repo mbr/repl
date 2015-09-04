@@ -36,7 +36,7 @@ def repl(repl_type, command, **kwargs):
                 break
 
     r = rt(command=command, **kwargs)
-    if not r.setup_readline():
+    if not r.has_readline:
         click.secho(
             'No readline support. Tab completion and history unavailable',
             fg='yellow',

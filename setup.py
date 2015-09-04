@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='repl',
-    version='1.0.dev1',
+    version='1.1.dev1',
     description='Run command as REPL-environment (useful for git!).',
     long_description=read('README.rst'),
     author='Marc Brinkmann',

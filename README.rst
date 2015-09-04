@@ -22,11 +22,10 @@ Instead of typing ``git ...``, type ``rg`` once. You'll never go back.
 Installation
 ------------
 
-Requires nothing but Python installed. No extra dependencies, just stdlib. Drop
-this right into your ``$PATH``, ``chmod +x`` and you are good to go.
-
+``repl`` must be installed from PyPI_
 
 .. _git: https://git-scm.com
+.. _PyPI: http://pypi.python.org.
 
 
 Detailed usage

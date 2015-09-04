@@ -109,3 +109,12 @@ class REPL(object):
 
             set_title(' '.join(cmd))
             subprocess.call(cmd)
+
+
+class GitREPL(REPL):
+    @classmethod
+    def detect(self, command):
+        return ['git'] == [c for c in command if not c.startswith('-')]
+
+
+available_repls = {'git': GitREPL}

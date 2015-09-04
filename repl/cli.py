@@ -1,6 +1,6 @@
 import click
 
-from repl import REPL
+from . import repl as repl_mod
 
 
 @click.command(
@@ -20,10 +20,22 @@ from repl import REPL
 @click.option('--sub',
               default='{}',
               help='Placeholder for argument substitution')
+@click.option('--repl-type',
+              help='Force specific REPL type (default: autodetect)')
 @click.option('--external/--no-external')
 @click.option('--prompt', help='Override prompt')
-def repl(**kwargs):
-    r = REPL(**kwargs)
+def repl(repl_type, command, **kwargs):
+    if repl_type:
+        rt = repl_mod.available_repls[repl_type]
+    else:
+        rt = repl_mod.REPL
+
+        for rc in repl_mod.available_repls.values():
+            if rc.detect(command):
+                rt = rc
+                break
+
+    r = rt(command=command, **kwargs)
     if not r.setup_readline():
         click.secho(
             'No readline support. Tab completion and history unavailable',

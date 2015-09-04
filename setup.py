@@ -20,10 +20,10 @@ setup(
     url='https://github.com/mbr/repl',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=['pyxdg'],
+    install_requires=['click'],
     entry_points={
         'console_scripts': [
-            'repl = repl:main',
+            'repl = repl.cli:repl',
         ],
     },
     classifiers=[

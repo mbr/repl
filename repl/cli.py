@@ -1,0 +1,33 @@
+import click
+
+from repl import REPL
+
+
+@click.command(
+    help='Starts a print-execute-print-loop by running the '
+    'supplied with input read from the terminal.',
+    epilog='Arguments can be given inline by using {}: "repl foo {} --bar" '
+    'will run replacing the {} with entered arguments. To suppress '
+    'this behavior completely, "--sub=" can be used.')
+@click.argument('command', nargs=-1)
+@click.option('--color/--no-color',
+              default=True,
+              help='Enable/disable colorized prompt (enabled by default).')
+@click.option('--external/--no-external',
+              default=True,
+              help='Enable/disable external command execution using ! '
+              '(enabled by default).')
+@click.option('--sub',
+              default='{}',
+              help='Placeholder for argument substitution')
+@click.option('--external/--no-external')
+@click.option('--prompt', help='Override prompt')
+def repl(**kwargs):
+    r = REPL(**kwargs)
+    if not r.setup_readline():
+        click.secho(
+            'No readline support. Tab completion and history unavailable',
+            fg='yellow',
+            err=True)
+
+    r.run()

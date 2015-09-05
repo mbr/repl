@@ -62,6 +62,15 @@ other arguments by passing ``{}`` as the argument. It will be replaced with
     echo Hello, … - Nice to meet you!>>
 
 
+Simple version
+--------------
+
+There is a single-file, no dependencies version of ``repl``, namely version
+``0.1``. It can be found at https://github.com/mbr/repl/tree/0.1 It has
+less features, but installing it is simply a matter of marking the script
+executable.
+
+
 Credits
 -------
 

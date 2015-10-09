@@ -31,7 +31,10 @@ class REPL(object):
                 histname = 'history'
             else:
                 histname = 'history-' + self.command[0].replace(os.sep, '_')
-            histfile = os.path.join(click.get_app_dir('repl'), histname)
+            appdir = click.get_app_dir('repl')
+            if not os.path.exists(appdir):
+                os.makedirs(appdir)
+            histfile = os.path.join(appdir, histname)
 
             # read old history, of present
             try:

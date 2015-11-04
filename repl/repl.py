@@ -113,7 +113,9 @@ class REPL(object):
                 continue
 
             # substitute values
-            cmd = replace_slice(self.cmd_sub_str, uargs, self.command,
+            cmd = replace_slice(self.cmd_sub_str,
+                                uargs,
+                                self.command,
                                 append=True)
 
             set_title(' '.join(cmd))
@@ -150,10 +152,10 @@ class GitREPL(REPL):
             branches.remove('todo')  # do not show in branch list
             flags.append('TODO')
 
-        branch_status = ' '.join(
-            click.style(b,
-                        fg='green',
-                        bold=(b == active_branch)) for b in branches)
+        branch_status = ' '.join(click.style(b,
+                                             fg='green',
+                                             bold=(b == active_branch))
+                                 for b in branches)
 
         flag_status = ' '.join('[' + click.style(flag,
                                                  fg='cyan') + ']'
@@ -168,8 +170,8 @@ class GitREPL(REPL):
             click.echo(branch_status)
             click.echo(flag_status)
         else:
-            click.echo(
-                branch_status + ' ' * (rem_space + spacing) + flag_status)
+            click.echo(branch_status + ' ' * (rem_space + spacing) +
+                       flag_status)
 
 
 available_repls = {'git': GitREPL}

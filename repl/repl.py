@@ -69,11 +69,12 @@ class REPL(object):
 
     @property
     def prompt(self):
+        """Returns the UTF-8 encoded prompt string."""
         if self.prompt_string is not None:
-            return self.prompt_string
+            return self.prompt_string.encode('utf8')
 
         if not self.color_enabled:
-            return u' '.join(self.command) + '>> '
+            return (u' '.join(self.command) + '>> ').encode('utf8')
 
         color = '34'
         sub_color = '37'
@@ -82,13 +83,16 @@ class REPL(object):
             self.colorize('1;' + color, part) if part != self.cmd_sub_str else
             self.colorize('0;' + sub_color, u'\u2026') for part in self.command
         ]
+
         return u' '.join(prompt_cmd).encode('utf8') + self.colorize(
             '0;' + color, '>> ')
 
     @property
     def title(self):
-        return u'[{}] {}>>'.format(
-            os.path.split(os.path.abspath('.'))[-1], u' '.join(self.command))
+        """Returns the UTF-8 encoded title"""
+        return (u'[{}] {}>>'.format(
+            os.path.split(os.path.abspath('.'))[-1],
+            u' '.join(self.command))).encode('utf8')
 
     def pre_prompt(self):
         pass

@@ -45,7 +45,7 @@ def fcomplete(text, state):
 
 def set_title(title):
     """Set the title of the terminal."""
-    sys.stdout.write("\x1b]2;{}\x07".format(title))
+    sys.stdout.write("\x1b]2;{}\x07".format(title.encode('utf8')))
 
 # Python2/3 compatibility
 if sys.version_info.major <= 2:

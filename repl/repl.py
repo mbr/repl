@@ -73,7 +73,7 @@ class REPL(object):
             return self.prompt_string
 
         if not self.color_enabled:
-            return ' '.join(self.command) + '>> '
+            return u' '.join(self.command) + '>> '
 
         color = '34'
         sub_color = '37'
@@ -82,12 +82,13 @@ class REPL(object):
             self.colorize('1;' + color, part) if part != self.cmd_sub_str else
             self.colorize('0;' + sub_color, u'\u2026') for part in self.command
         ]
-        return ' '.join(prompt_cmd) + self.colorize('0;' + color, '>> ')
+        return u' '.join(prompt_cmd).encode('utf8') + self.colorize(
+            '0;' + color, '>> ')
 
     @property
     def title(self):
-        return '[{}] {}>>'.format(
-            os.path.split(os.path.abspath('.'))[-1], ' '.join(self.command))
+        return u'[{}] {}>>'.format(
+            os.path.split(os.path.abspath('.'))[-1], u' '.join(self.command))
 
     def pre_prompt(self):
         pass

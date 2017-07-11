@@ -1,9 +1,26 @@
-import fcntl
 import os
 import re
 import struct
 import sys
-import termios
+
+# windows does not support fileno or termios
+if sys.platform != "win32":
+    import fcntl
+    import termios
+
+    def get_terminal_size(fileno=None):
+        if fileno is None:
+            fileno = sys.stdout.fileno()
+
+        buf = struct.pack('HHHH', 0, 0, 0, 0)
+        res = fcntl.ioctl(fileno, termios.TIOCGWINSZ, buf)
+        h, w, _, _ = struct.unpack('HHHH', res)
+
+        return (w, h)
+else:
+
+    def get_terminal_size(fileno=None):
+        return (80, 25)
 
 
 def replace_slice(placeholder, replacement, l, append=False):
@@ -47,23 +64,12 @@ def set_title(title):
     """Set the title of the terminal."""
     sys.stdout.write("\x1b]2;{}\x07".format(title.encode('utf8')))
 
+
 # Python2/3 compatibility
 if sys.version_info.major <= 2:
     inp = raw_input
 else:
     inp = input
-
-
-def get_terminal_size(fileno=None):
-    if fileno is None:
-        fileno = sys.stdout.fileno()
-
-    buf = struct.pack('HHHH', 0, 0, 0, 0)
-    res = fcntl.ioctl(fileno, termios.TIOCGWINSZ, buf)
-    h, w, _, _ = struct.unpack('HHHH', res)
-
-    return (w, h)
-
 
 _ANSI_ESCAPE_EXP = re.compile(r'\x1b[^m]*m')
 

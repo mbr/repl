@@ -71,10 +71,10 @@ class REPL(object):
     def prompt(self):
         """Returns the UTF-8 encoded prompt string."""
         if self.prompt_string is not None:
-            return self.prompt_string.encode('utf8')
+            return self.prompt_string
 
         if not self.color_enabled:
-            return (u' '.join(self.command) + '>> ').encode('utf8')
+            return (' '.join(self.command) + '>> ').encode('utf8')
 
         color = '34'
         sub_color = '37'
@@ -84,8 +84,7 @@ class REPL(object):
             self.colorize('0;' + sub_color, u'\u2026') for part in self.command
         ]
 
-        return u' '.join(prompt_cmd).encode('utf8') + self.colorize(
-            '0;' + color, '>> ')
+        return ' '.join(prompt_cmd) + self.colorize('0;' + color, '>> ')
 
     @property
     def title(self):
@@ -117,10 +116,8 @@ class REPL(object):
                 continue
 
             # substitute values
-            cmd = replace_slice(self.cmd_sub_str,
-                                uargs,
-                                self.command,
-                                append=True)
+            cmd = replace_slice(
+                self.cmd_sub_str, uargs, self.command, append=True)
 
             set_title(' '.join(cmd))
             subprocess.call(cmd)
@@ -140,6 +137,9 @@ class GitREPL(REPL):
         except subprocess.CalledProcessError:
             return
 
+        # decode to a string
+        branch_output = branch_output.decode(sys.getdefaultencoding())
+
         # display special prompt
         w, _ = get_terminal_size()
 
@@ -156,14 +156,12 @@ class GitREPL(REPL):
             branches.remove('todo')  # do not show in branch list
             flags.append('TODO')
 
-        branch_status = ' '.join(click.style(b,
-                                             fg='green',
-                                             bold=(b == active_branch))
-                                 for b in branches)
+        branch_status = ' '.join(
+            click.style(b, fg='green', bold=(b == active_branch))
+            for b in branches)
 
-        flag_status = ' '.join('[' + click.style(flag,
-                                                 fg='cyan') + ']'
-                               for flag in flags)
+        flag_status = ' '.join(
+            '[' + click.style(flag, fg='cyan') + ']' for flag in flags)
 
         spacing = 2
         bs_len = len(strip_control(branch_status))

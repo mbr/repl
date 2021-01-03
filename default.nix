@@ -6,4 +6,5 @@ in python.pkgs.buildPythonPackage {
   name = "repl";
   version = "1.1.dev1";
   src = ./.;
+  buildInputs = [ python ];
 }
